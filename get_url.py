@@ -34,7 +34,7 @@ type_dict={
             }
 
 
-def get_url(url,root,page):
+def get_url(url,root,page="0"):
     header = {
     'Connection': 'keep-alive',
     'Cache-Control': 'max-age=0',
@@ -48,18 +48,23 @@ def get_url(url,root,page):
     'Accept-Language': 'ja,zh;q=0.9,zh-CN;q=0.8,en;q=0.7',
     'Referer': 'https://92m303r2a84roj2l0234.guoguoapps.com',
         }
-    print url+page
+    if page=="0":
+        pass
+    elif page=="14":
+        pass
+    else:
+        url=url+page
     if not os.path.exists("m3u8_file"):
         os.makedirs("m3u8_file")
     if not os.path.exists("m3u8_file/"+root):
         os.makedirs("m3u8_file/"+root) 
         
-
+    #print url
     context = ssl._create_unverified_context()
     
     try:
         
-        req = urllib2.Request(url+page, headers = header)
+        req = urllib2.Request(url, headers = header)
         response = urllib2.urlopen(req,context=context)
         html = response.read()
     except:
@@ -94,7 +99,7 @@ def get_url(url,root,page):
         json.dump(html,f,sort_keys=True)#indent=4
     return html
 
-def get_m3u8(html_text,root,page):
+def get_m3u8(html_text,root):
     header = {    
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36',
     'Referer': 'https://92m303r2a84roj2l0234.guoguoapps.com',
@@ -192,9 +197,16 @@ except:
             13全部.\n\
             14搜索.\n ")
     page=input(u"请输入下载页数：\n")
-for i in range(1,page):
+if type_num==14:
+    print("not found！\n")
+elif type_num==12:
     url=type_dict[type_list[type_num-1]]
-    html=get_url(url,type_list[type_num-1],str(i))
-    get_m3u8(html,type_list[type_num-1],str(i))
+    html=get_url(url,type_list[type_num-1])
+    get_m3u8(html,type_list[type_num-1])
+else:
+    for i in range(1,page):
+        url=type_dict[type_list[type_num-1]]
+        html=get_url(url,type_list[type_num-1],str(i))
+        get_m3u8(html,type_list[type_num-1])
 
 
